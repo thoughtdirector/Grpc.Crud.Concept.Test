@@ -8,9 +8,9 @@ namespace Services.Services.Contract
 {
     public interface IRoleRepository
     {
-        Task<IEnumerable<Role>> GetAll(CancellationToken cancellationToken = default);
-        Task<Role> GetById(Guid roleId, CancellationToken cancellationToken = default);
-        void Insert(Role role);
-        void Remove(Role role);
+        Task<IEnumerable<Shopping>> GetAll(CancellationToken cancellationToken = default);
+        Task<Shopping> GetById(Guid roleId, CancellationToken cancellationToken = default);
+        void Insert(Shopping role);
+        void Remove(Shopping role);
     }
 }

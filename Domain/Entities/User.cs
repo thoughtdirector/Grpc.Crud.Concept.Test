@@ -12,11 +12,11 @@ namespace Domain.Entities
         [Key]
         public Guid userIdentifier { get; set; }
         public string userName { get; set; }
-        public int userPhone { get; set; }
-        public string userPassword { get; set; }
         public string userEmail { get; set; }
-
+        public string userPassword { get; set; }
+        public string UserRole{ get; set; }
+        public string PaymentMethod { get; set; }
         //Many To Many Relactionship
-        public ICollection<Role> roles { get; set; }
+        public ICollection<Shopping> roles { get; set; }
     }
 }

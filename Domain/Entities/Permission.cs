@@ -15,6 +15,6 @@ namespace Domain.Entities
         public string permissionDescription { get; set; }
 
         //Many To Many Relationship
-        public ICollection<Role> roles { get; set; }
+        public ICollection<Shopping> roles { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Domain.Exceptions.BadRequestException
     public sealed class RoleDoesNotBelongToUserException : BadRequestException
     {
         public RoleDoesNotBelongToUserException(Guid roleId)
-            : base($"The Role with the identifier {roleId} does not belong to any User")
+            : base($"The Shopping with the identifier {roleId} does not belong to any User")
         {
         }
     }

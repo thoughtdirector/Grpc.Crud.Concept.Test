@@ -14,12 +14,12 @@ namespace Persistence.Repositories
 
         private readonly RepositoryDbContext _dbContext;
         public RoleRepository(RepositoryDbContext dbContext) => _dbContext = dbContext;
-        public async Task<IEnumerable<Role>> GetAll(CancellationToken cancellationToken = default) =>
+        public async Task<IEnumerable<Shopping>> GetAll(CancellationToken cancellationToken = default) =>
             await _dbContext.Roles.Include(x => x.permissions).ToListAsync(cancellationToken);
-        public async Task<Role> GetById(Guid roleId, CancellationToken cancellationToken = default) =>
+        public async Task<Shopping> GetById(Guid roleId, CancellationToken cancellationToken = default) =>
             await _dbContext.Roles.Include(x => x.permissions).FirstOrDefaultAsync(x => x.roleIdentifier == roleId, cancellationToken);
-        public void Insert(Role role) => _dbContext.Roles.Add(role);
-        public void Remove(Role role) => _dbContext.Roles.Remove(role);
+        public void Insert(Shopping role) => _dbContext.Roles.Add(role);
+        public void Remove(Shopping role) => _dbContext.Roles.Remove(role);
     
     }
 }

@@ -18,14 +18,14 @@ namespace Services
 
         public RoleService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
 
-        public async Task<IEnumerable<Role>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Shopping>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var roles = await _repositoryManager.RoleRepository.GetAll(cancellationToken);
             return roles;
         }
 
 
-        public async Task<Role> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default)
+        public async Task<Shopping> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default)
         {
             var role = await _repositoryManager.RoleRepository.GetById(roleId, cancellationToken);
             if (role is null)
@@ -35,14 +35,14 @@ namespace Services
             return role;
         }
 
-        public async Task<Role> CreateAsync(RoleForCreationDto roleForCreationDto, CancellationToken cancellationToken = default)
+        public async Task<Shopping> CreateAsync(RoleForCreationDto roleForCreationDto, CancellationToken cancellationToken = default)
         {
             var permission = await _repositoryManager.RoleRepository.GetById(roleForCreationDto.permissionsId, cancellationToken);
             if (permission is null)
             {
                 throw new PremissionNotFoundException(roleForCreationDto.permissionsId);
             }
-            var Role = roleForCreationDto.Adapt<Role>();
+            var Role = roleForCreationDto.Adapt<Shopping>();
             _repositoryManager.RoleRepository.Insert(Role);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);

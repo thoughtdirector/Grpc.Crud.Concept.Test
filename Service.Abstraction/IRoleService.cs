@@ -9,11 +9,11 @@ namespace Services.Services.Contract
 {
     public interface IRoleService
     {
-        Task<IEnumerable<Role>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<Shopping>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Task<Role> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default);
+        Task<Shopping> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default);
 
-        Task<Role> CreateAsync(RoleForCreationDto roleForCreation, CancellationToken cancellationToken = default);
+        Task<Shopping> CreateAsync(RoleForCreationDto roleForCreation, CancellationToken cancellationToken = default);
 
         Task UpdateAsync(Guid roleId, RoleForUpdateDto rolForUpdate, CancellationToken cancellationToken = default);
 
