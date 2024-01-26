@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Crud.Concept.Test";
+
+package warehouse;
+
+message ProductDetail {
+	string id = 1;
+	string name = 2;
+	int32 quantity = 3;
+}
+
+message ProductId{
+	string id = 1;
+}
+
+message ProductName{
+	string name = 1;
+}
+
+service ProductServiceProto {
+	rpc GetProductList (Empty) returns (Products);
+	rpc GetProduct (GetProductDetailRequest) returns (ProductDetail);
+	rpc CreateProduct (CreateProductDetailRequest) returns (ProductDetail);
+	rpc UpdateProduct (UpdateProductDetailRequest) returns (ProductDetail);
+	rpc DeleteProduct (DeleteProductDetailRequest) returns (DeleteProductDetailResponse);
+}
+
+message GetProductDetailRequest {
+	string productId = 1;
+}
+
+message CreateProductDetailRequest {
+	ProductDetail  Product = 1;
+}
+message UpdateProductDetailRequest {
+	ProductDetail  Product = 1;
+}
+message DeleteProductDetailRequest {
+	string productId = 1;
+}
+message DeleteProductDetailResponse {
+	bool isDelete = 1;
+}
+
+message Empty{
+}
+
+message Products {
+  repeated ProductDetail  items = 1;
+}
+
+message ErrorResponse{
+	string reason = 1;
+	repeated string details = 2;
+}
