@@ -10,15 +10,15 @@ using Services.Services.Contract;
 
 namespace Persistence.Repositories
 {
-    internal sealed class PermissionRepository : IPermissionRepository
+    internal sealed class PermissionRepository : IRepository<Permission>
     {
         private readonly RepositoryDbContext _dbContext;
         public PermissionRepository(RepositoryDbContext dbContext) => _dbContext = dbContext;
         public async Task<IEnumerable<Permission>> GetAll(CancellationToken cancellationToken = default) =>
             await _dbContext.Permissions.ToListAsync(cancellationToken);
         public async Task<Permission> GetById(Guid permissionId, CancellationToken cancellationToken = default) =>
-            await _dbContext.Permissions.Include(x => x.roles).FirstOrDefaultAsync(x => x.permissionIdentifier == permissionId, cancellationToken);
-        public void Insert(Permission permission) => _dbContext.Permissions.Add(permission);
-        public void Remove(Permission permisson) => _dbContext.Permissions.Remove(permisson);
+            await _dbContext.Permissions.Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == permissionId, cancellationToken);
+        public async Task InsertAsync(Permission permission, CancellationToken cancellationToken = default) => await _dbContext.Permissions.AddAsync(permission, cancellationToken);
+        public void Delete(Permission permisson) => _dbContext.Permissions.Remove(permisson);
     }
 }

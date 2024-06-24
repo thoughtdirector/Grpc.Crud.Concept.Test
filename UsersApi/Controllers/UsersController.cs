@@ -38,7 +38,7 @@ namespace Presentation.Controllers
         {
             var userDto = await _serviceManager.UserService.CreateAsync(userForCreationDto);
 
-            return CreatedAtAction(nameof(GetUserById), new { userId = userDto.userIdentifier }, userDto);
+            return CreatedAtAction(nameof(GetUserById), new { userId = userDto.Id }, userDto);
         }
 
         [HttpPut]

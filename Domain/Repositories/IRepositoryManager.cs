@@ -1,12 +1,12 @@
-﻿using Services.Services.Contract;
+﻿using Domain.Entities;
+using Services.Services.Contract;
+using System;
 
 namespace Domain.Repositories
 {
     public interface IRepositoryManager
     {
-        IUserRepository UserRepository { get; }
-        IPermissionRepository PermissionRepository { get; }
-        IRoleRepository RoleRepository { get; }
+        IRepository<T> GetRepository<T>() where T : Entity<Guid>;
         IUnitOfWork UnitOfWork { get; }
     }
 }

@@ -9,7 +9,7 @@ using Services.Services.Contract;
 
 namespace Persistence.Repositories
 {
-    internal sealed class RoleRepository : IRoleRepository
+    internal sealed class RoleRepository : IRepository<Shopping>
     { 
 
         private readonly RepositoryDbContext _dbContext;
@@ -17,9 +17,9 @@ namespace Persistence.Repositories
         public async Task<IEnumerable<Shopping>> GetAll(CancellationToken cancellationToken = default) =>
             await _dbContext.Roles.Include(x => x.permissions).ToListAsync(cancellationToken);
         public async Task<Shopping> GetById(Guid roleId, CancellationToken cancellationToken = default) =>
-            await _dbContext.Roles.Include(x => x.permissions).FirstOrDefaultAsync(x => x.roleIdentifier == roleId, cancellationToken);
-        public void Insert(Shopping role) => _dbContext.Roles.Add(role);
-        public void Remove(Shopping role) => _dbContext.Roles.Remove(role);
+            await _dbContext.Roles.Include(x => x.permissions).FirstOrDefaultAsync(x => x.Id == roleId, cancellationToken);
+        public async Task InsertAsync(Shopping role, CancellationToken cancellationToken = default) => await _dbContext.Roles.AddAsync(role, cancellationToken);
+        public void Delete(Shopping role) => _dbContext.Roles.Remove(role);
     
     }
 }

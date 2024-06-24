@@ -16,11 +16,18 @@ namespace Services
     {
         private readonly IRepositoryManager _repositoryManager;
 
-        public PermissionService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
+
+        public PermissionService(IRepositoryManager repositoryManager) 
+        {
+            _repositoryManager = repositoryManager;
+
+
+        }
 
         public async Task<IEnumerable<Permission>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var permissions = await _repositoryManager.PermissionRepository.GetAll(cancellationToken);
+            IRepository<Permission> permissionRepository = _repositoryManager.GetRepository<Permission>();
+            var permissions = await permissionRepository.GetAll(cancellationToken);
             return permissions;
         }
 

@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System;
 
 namespace Persistence
 {
@@ -9,10 +11,11 @@ namespace Persistence
             : base(options)
         {
         }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Shopping> Roles { get; set; }
-        public DbSet<Permission>  Permissions { get; set; }
+        public DbSet<T> GetValues<T>() where T : Entity<Guid> 
+        {
+            return (DbSet<T>)this.GetType().GetProperties().FirstOrDefault(it => typeof(DbSet<>).MakeGenericType(typeof(T)) == it.PropertyType)!.GetValue(this)!;
+        }
 
     }
 }
+    

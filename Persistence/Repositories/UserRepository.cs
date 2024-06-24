@@ -10,17 +10,17 @@ using Services.Services.Contract;
 
 namespace Persistence.Repositories
 {
-    internal sealed class UserRepository : IUserRepository
+    internal sealed class UserRepository : IRepository<User>
     {
         private readonly RepositoryDbContext _dbContext;
         public UserRepository(RepositoryDbContext dbContext) => _dbContext = dbContext;
         public async Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default) =>
             await _dbContext.Users.Include(x => x.roles).ToListAsync(cancellationToken);
         public async Task<IEnumerable<User>> GetByRoleId(Guid roleId, CancellationToken cancellationToken = default) =>
-           await _dbContext.Users.Include(x => x.roles).Where(x => x.roles.Count(x => x.roleIdentifier== roleId) >= 1).ToListAsync(cancellationToken);
+           await _dbContext.Users.Include(x => x.roles).Where(x => x.roles.Count(x => x.Id== roleId) >= 1).ToListAsync(cancellationToken);
         public async Task<User> GetById(Guid userId, CancellationToken cancellationToken = default) =>
-            await _dbContext.Users.Include(x => x.roles).FirstOrDefaultAsync(x => x.userIdentifier == userId, cancellationToken);
-        public void Insert(User user) => _dbContext.Users.Add(user);
-        public void Remove(User user) => _dbContext.Users.Remove(user);
+            await _dbContext.Users.Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+        public async Task InsertAsync(User user, CancellationToken cancellationToken = default) => await _dbContext.Users.AddAsync(user);
+        public void Delete(User user) => _dbContext.Users.Remove(user);
     }
 }

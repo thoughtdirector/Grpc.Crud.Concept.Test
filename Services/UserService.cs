@@ -66,7 +66,7 @@ namespace Services
 
         public async Task UpdateAsync(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var user = await _repositoryManager.UserRepository.GetById( userId, cancellationToken);
+            User user = await _repositoryManager.UserRepository.GetById( userId, cancellationToken);
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
@@ -76,7 +76,6 @@ namespace Services
             {
                 throw new RoleNotFoundException(userForUpdateDto.roleId);
             }
-            user.userPhone = userForUpdateDto.userPhone;
             user.userEmail = userForUpdateDto.userEmail;
             user.roles.Add(role);
             

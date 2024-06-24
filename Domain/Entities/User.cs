@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class User
+    public class User : Entity<Guid>
     {
-        [Key]
-        public Guid userIdentifier { get; set; }
         public string userName { get; set; }
         public string userEmail { get; set; }
         public string userPassword { get; set; }

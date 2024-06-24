@@ -1,30 +1,58 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using Services.Services.Contract;
 
 namespace Persistence.Repositories
 {
     public sealed class RepositoryManager : IRepositoryManager
     {
-        private readonly Lazy<IUserRepository> _lazyUserRepository;
-        private readonly Lazy<IRoleRepository> _lazyRoleRepository;
-        private readonly Lazy<IPermissionRepository> _lazyPermissionRepository;
-        private readonly Lazy<IUnitOfWork> _lazyUnitOfWork;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
 
-        public RepositoryManager(RepositoryDbContext dbContext)
+        public RepositoryManager(IServiceProvider serviceProvider)
         {
-            _lazyUserRepository = new Lazy<IUserRepository>(() => new UserRepository(dbContext));
-            _lazyRoleRepository = new Lazy<IRoleRepository>(() => new RoleRepository(dbContext));
-            _lazyPermissionRepository = new Lazy<IPermissionRepository>(() => new  PermissionRepository (dbContext));
-            _lazyUnitOfWork = new Lazy<IUnitOfWork>(() => new UnitOfWork(dbContext));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public IUserRepository UserRepository => _lazyUserRepository.Value;
+        public IRepository<T> GetRepository<T>() where T : Entity<Guid>
+        {
+            var repositoryType = typeof(IRepository<T>);
+            if (!_repositories.ContainsKey(repositoryType))
+            {
+                InitializeRepository<T>();
+            }
 
-        public IRoleRepository RoleRepository => _lazyRoleRepository.Value;
+            if (!_repositories.TryGetValue(repositoryType, out object repository))
+            {
+                throw new InvalidOperationException($"Repository of type {repositoryType.Name} not registered.");
+            }
 
-        public IPermissionRepository PermissionRepository => _lazyPermissionRepository.Value;
+            return (IRepository<T>)repository;
+        }
 
-        public IUnitOfWork UnitOfWork => _lazyUnitOfWork.Value;
+        private void InitializeRepository<T>() where T : Entity<Guid>
+        {
+            Type repositoryType = typeof(IRepository<T>);
+            Type concreteType = Assembly.GetExecutingAssembly().GetTypes()
+                .FirstOrDefault(t => !t.IsAbstract && !t.IsInterface &&
+                    t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRepository<>)));
+
+            if (concreteType != null)
+            {
+                object repositoryInstance = ActivatorUtilities.CreateInstance(_serviceProvider, concreteType);
+                _repositories[repositoryType] = repositoryInstance;
+            }
+            else
+            {
+                throw new InvalidOperationException($"No concrete implementation found for repository of type {repositoryType.Name}.");
+            }
+        }
+
+        public IUnitOfWork UnitOfWork => _serviceProvider.GetService<IUnitOfWork>();
     }
 }
