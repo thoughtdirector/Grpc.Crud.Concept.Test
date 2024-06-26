@@ -49,23 +49,7 @@ namespace UsersApi
 
         private void RegisterServices(IServiceCollection services)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Type serviceInterfaceType = typeof(IService<,,>);
-            IEnumerable<Type> serviceTypes = assembly.GetTypes()
-                .Where(t => t.GetInterfaces()
-                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == serviceInterfaceType));
-
-            foreach (Type serviceType in serviceTypes)
-            {
-                IEnumerable<Type> implementedInterfaces = serviceType.GetInterfaces()
-                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == serviceInterfaceType);
-
-                foreach (Type implementedInterface in implementedInterfaces)
-                {
-                    services.AddScoped(implementedInterface, serviceType);
-                }
-            }
-
+           
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
