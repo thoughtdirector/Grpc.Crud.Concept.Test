@@ -13,9 +13,11 @@ using Persistence;
 using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
+using Services.Services.Contract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace UsersApi
@@ -29,29 +31,43 @@ namespace UsersApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            RegisterServices(services);
             services.AddControllers();
-            services.AddScoped<IServiceManager, ServiceManager>();
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UsersApi", Version = "v1" });
             });
 
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
-
             services.AddDbContextPool<RepositoryDbContext>(builder =>
             {
                 var connectionString = Configuration.GetConnectionString("Database");
-
                 builder.UseSqlServer(connectionString);
-
-
-
             });
+        }
+
+        private void RegisterServices(IServiceCollection services)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Type serviceInterfaceType = typeof(IService<,,>);
+            IEnumerable<Type> serviceTypes = assembly.GetTypes()
+                .Where(t => t.GetInterfaces()
+                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == serviceInterfaceType));
+
+            foreach (Type serviceType in serviceTypes)
+            {
+                IEnumerable<Type> implementedInterfaces = serviceType.GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == serviceInterfaceType);
+
+                foreach (Type implementedInterface in implementedInterfaces)
+                {
+                    services.AddScoped(implementedInterface, serviceType);
+                }
+            }
+
+            services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
