@@ -21,7 +21,7 @@ namespace Services
         }
 
         public IService<TEntity, TCreationDto, TUpdateDto> GetService<TEntity, TCreationDto, TUpdateDto>()
-            where TEntity : Entity<Guid>
+            where TEntity : Entity
             where TCreationDto : class
             where TUpdateDto : class
         {
@@ -37,7 +37,7 @@ namespace Services
         }
 
         private Lazy<object> CreateLazyService<TEntity, TCreationDto, TUpdateDto>()
-            where TEntity : Entity<Guid>
+            where TEntity : Entity
             where TCreationDto : class
             where TUpdateDto : class
         {

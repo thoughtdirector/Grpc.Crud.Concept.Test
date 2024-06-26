@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public abstract class Entity<TId> where TId : IComparable, IComparable<TId>
+    public abstract class Entity
     {
         [Key]
-        public TId? Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

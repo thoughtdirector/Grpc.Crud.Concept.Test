@@ -1,11 +1,9 @@
-﻿using Contracts.DTO;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Services.Services.Contract;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,15 +12,15 @@ namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DynamicCrudController<TEntity, TCreationDto, TUpdateDto> : ControllerBase
-        where TEntity : Entity<Guid>
+    public class CrudController<TEntity, TCreationDto, TUpdateDto> : ControllerBase
+        where TEntity : Entity
         where TCreationDto : class
         where TUpdateDto : class
     {
         private readonly IServiceManager _serviceManager;
         private readonly Type _serviceType;
 
-        public DynamicCrudController(IServiceManager serviceManager)
+        public CrudController(IServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
             _serviceType = typeof(IService<,,>).MakeGenericType(typeof(TEntity), typeof(TCreationDto), typeof(TUpdateDto));

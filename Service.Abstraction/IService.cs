@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Services.Services.Contract
 {
     public interface IService<TEntity, TCreationDto, TUpdateDto>
-        where TEntity : Entity<Guid>
+        where TEntity : Entity
         where TCreationDto : class 
         where TUpdateDto : class
     {

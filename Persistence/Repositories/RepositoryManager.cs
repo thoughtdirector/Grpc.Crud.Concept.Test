@@ -5,6 +5,7 @@ using System.Reflection;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Messages;
 using Services.Services.Contract;
 
 
@@ -20,7 +21,7 @@ namespace Persistence.Repositories
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public IRepository<T> GetRepository<T>() where T : Entity<Guid>
+        public IRepository<T> GetRepository<T>() where T : Entity
         {
             Type repositoryType = typeof(IRepository<T>);
             if (!_repositories.ContainsKey(repositoryType))
@@ -30,13 +31,13 @@ namespace Persistence.Repositories
 
             if (!_repositories.TryGetValue(repositoryType, out object repository))
             {
-                throw new InvalidOperationException($"Repository of type {repositoryType.Name} not registered.");
+                throw new InvalidOperationException(string.Format(RepositoryMessages.RepositoryTypeNotRegistered,repositoryType.Name));
             }
 
             return (IRepository<T>)repository;
         }
 
-        private void InitializeRepository<T>() where T : Entity<Guid>
+        private void InitializeRepository<T>() where T : Entity
         {
             Type repositoryType = typeof(IRepository<T>);
             Type concreteType = Assembly.GetExecutingAssembly().GetTypes()

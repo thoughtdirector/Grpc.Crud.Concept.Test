@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Permission: Entity<Guid>
+    public class Permission: Entity
     {
         public string permissionName { get; set; }
         public string permissionDescription { get; set; }

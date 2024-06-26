@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20231023211404_InitialCreate")]
+    [Migration("20240626141931_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Permission", b =>
                 {
-                    b.Property<Guid>("permissionIdentifier")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -36,14 +36,14 @@ namespace Persistence.Migrations
                     b.Property<string>("permissionName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("permissionIdentifier");
+                    b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("Domain.Entities.Shopping", b =>
                 {
-                    b.Property<Guid>("roleIdentifier")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -53,16 +53,22 @@ namespace Persistence.Migrations
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("roleIdentifier");
+                    b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Shopping");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("userIdentifier")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserRole")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userEmail")
                         .HasColumnType("nvarchar(max)");
@@ -73,70 +79,67 @@ namespace Persistence.Migrations
                     b.Property<string>("userPassword")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("userPhone")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.HasKey("userIdentifier");
-
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("PermissionRole", b =>
+            modelBuilder.Entity("PermissionShopping", b =>
                 {
-                    b.Property<Guid>("permissionspermissionIdentifier")
+                    b.Property<Guid>("permissionsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("rolesroleIdentifier")
+                    b.Property<Guid>("rolesId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("permissionspermissionIdentifier", "rolesroleIdentifier");
+                    b.HasKey("permissionsId", "rolesId");
 
-                    b.HasIndex("rolesroleIdentifier");
+                    b.HasIndex("rolesId");
 
-                    b.ToTable("PermissionRole");
+                    b.ToTable("PermissionShopping");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("ShoppingUser", b =>
                 {
-                    b.Property<Guid>("rolesroleIdentifier")
+                    b.Property<Guid>("rolesId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("usersuserIdentifier")
+                    b.Property<Guid>("usersId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("rolesroleIdentifier", "usersuserIdentifier");
+                    b.HasKey("rolesId", "usersId");
 
-                    b.HasIndex("usersuserIdentifier");
+                    b.HasIndex("usersId");
 
-                    b.ToTable("RoleUser");
+                    b.ToTable("ShoppingUser");
                 });
 
-            modelBuilder.Entity("PermissionRole", b =>
+            modelBuilder.Entity("PermissionShopping", b =>
                 {
                     b.HasOne("Domain.Entities.Permission", null)
                         .WithMany()
-                        .HasForeignKey("permissionspermissionIdentifier")
+                        .HasForeignKey("permissionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Shopping", null)
                         .WithMany()
-                        .HasForeignKey("rolesroleIdentifier")
+                        .HasForeignKey("rolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("ShoppingUser", b =>
                 {
                     b.HasOne("Domain.Entities.Shopping", null)
                         .WithMany()
-                        .HasForeignKey("rolesroleIdentifier")
+                        .HasForeignKey("rolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("usersuserIdentifier")
+                        .HasForeignKey("usersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Shopping : Entity<Guid>
+    public class Shopping : Entity
     {
         public string RoleName { get; set; }
         public string RoleDescription { get; set; }

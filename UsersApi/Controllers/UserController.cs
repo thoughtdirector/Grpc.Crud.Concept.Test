@@ -4,7 +4,7 @@ using Services.Abstractions;
 
 namespace Presentation.Controllers
 {
-    public class UsersController : DynamicCrudController<User, UserForCreationDto, UserForUpdateDto>
+    public class UsersController : CrudController<User, UserForCreationDto, UserForUpdateDto>
     {
         public UsersController(IServiceManager serviceManager) : base(serviceManager)
         {

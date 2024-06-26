@@ -4,7 +4,7 @@ using Services.Abstractions;
 
 namespace Presentation.Controllers
 {
-    public class RoleController : DynamicCrudController<Shopping, RoleForCreationDto, RoleForUpdateDto>
+    public class RoleController : CrudController<Shopping, RoleForCreationDto, RoleForUpdateDto>
     {
         public RoleController(IServiceManager serviceManager) : base(serviceManager)
         {
