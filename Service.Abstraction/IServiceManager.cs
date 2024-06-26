@@ -1,11 +1,14 @@
-﻿using Services.Services.Contract;
+﻿using Domain.Entities;
+using Services.Services.Contract;
+using System;
 
 namespace Services.Abstractions
 {
     public interface IServiceManager
     {
-        IUserService UserService { get; }
-        IRoleService RoleService { get; }
-        IPermissionService PermissionService { get; }
+        IService<TEntity, TCreationDto, TUpdateDto> GetService<TEntity, TCreationDto, TUpdateDto>()
+             where TEntity : Entity<Guid> 
+             where TCreationDto : class
+             where TUpdateDto : class;
     }
 }

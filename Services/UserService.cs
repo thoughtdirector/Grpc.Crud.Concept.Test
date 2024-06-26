@@ -12,36 +12,28 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal sealed class UserService : IUserService
+    internal sealed class UserService : IService<User, UserForCreationDto, UserForUpdateDto>
     {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Shopping> _shoppingRepository;
 
-        public UserService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
+        public UserService(IRepositoryManager repositoryManager) 
+        {
+            _repositoryManager = repositoryManager;
+            _userRepository = repositoryManager.GetRepository<User>();
+            _shoppingRepository = repositoryManager.GetRepository<Shopping>();
+        }
 
         public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var users = await _repositoryManager.UserRepository.GetAll(cancellationToken);
-            return users;
-        }
-
-        public async Task<IEnumerable<User>> GetByRoleIdAsync(Guid roleId, CancellationToken cancellationToken = default)
-        {
-            var role = await _repositoryManager.RoleRepository.GetById(roleId, cancellationToken);
-            if (role is null)
-            {
-                throw new RoleNotFoundException(roleId);
-            }
-            var users = await _repositoryManager.UserRepository.GetByRoleId(roleId, cancellationToken);
-            if (users is null)
-            {
-                throw new RoleDoesNotBelongToUserException(roleId);
-            }
+            var users = await _userRepository.GetAll(cancellationToken);
             return users;
         }
 
         public async Task<User> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            var user = await _repositoryManager.UserRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
@@ -51,13 +43,13 @@ namespace Services
 
         public async Task<User> CreateAsync(UserForCreationDto userForCreationDto, CancellationToken cancellationToken = default)
         {
-            var role = await _repositoryManager.RoleRepository.GetById(userForCreationDto.roleId, cancellationToken);
+            var role = await _shoppingRepository.GetById(userForCreationDto.roleId, cancellationToken);
             if (role is null)
             {
                 throw new RoleNotFoundException(userForCreationDto.roleId);
             }
             var user = userForCreationDto.Adapt<User>();
-            _repositoryManager.UserRepository.Insert(user);
+            _userRepository.InsertAsync(user);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -66,12 +58,12 @@ namespace Services
 
         public async Task UpdateAsync(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken cancellationToken = default)
         {
-            User user = await _repositoryManager.UserRepository.GetById( userId, cancellationToken);
+            User user = await _userRepository.GetById( userId, cancellationToken);
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
-            var role = await _repositoryManager.RoleRepository.GetById( userForUpdateDto.roleId , cancellationToken);
+            var role = await _shoppingRepository.GetById( userForUpdateDto.roleId , cancellationToken);
             if (role is null)
             {
                 throw new RoleNotFoundException(userForUpdateDto.roleId);
@@ -85,14 +77,14 @@ namespace Services
 
         public async Task DeleteAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            var user = await _repositoryManager.UserRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            _repositoryManager.UserRepository.Remove(user);
+            _userRepository.Delete(user);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
         }

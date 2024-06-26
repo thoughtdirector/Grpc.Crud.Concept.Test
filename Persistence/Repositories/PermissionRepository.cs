@@ -15,10 +15,10 @@ namespace Persistence.Repositories
         private readonly RepositoryDbContext _dbContext;
         public PermissionRepository(RepositoryDbContext dbContext) => _dbContext = dbContext;
         public async Task<IEnumerable<Permission>> GetAll(CancellationToken cancellationToken = default) =>
-            await _dbContext.Permissions.ToListAsync(cancellationToken);
+            await _dbContext.GetValues<Permission>().ToListAsync(cancellationToken);
         public async Task<Permission> GetById(Guid permissionId, CancellationToken cancellationToken = default) =>
-            await _dbContext.Permissions.Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == permissionId, cancellationToken);
-        public async Task InsertAsync(Permission permission, CancellationToken cancellationToken = default) => await _dbContext.Permissions.AddAsync(permission, cancellationToken);
-        public void Delete(Permission permisson) => _dbContext.Permissions.Remove(permisson);
+            await _dbContext.GetValues<Permission>().Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == permissionId, cancellationToken);
+        public async Task InsertAsync(Permission permission, CancellationToken cancellationToken = default) => await _dbContext.GetValues<Permission>().AddAsync(permission, cancellationToken);
+        public void Delete(Permission permisson) => _dbContext.GetValues<Permission>().Remove(permisson);
     }
 }

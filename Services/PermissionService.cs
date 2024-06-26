@@ -12,29 +12,30 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal sealed class PermissionService : IPermissionService
+    internal sealed class PermissionService : IService<Permission, PermissionForCreationDto, PermissionForUpdateDto>
     {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IRepository<Permission> _permissionRepository;
+
 
 
         public PermissionService(IRepositoryManager repositoryManager) 
         {
             _repositoryManager = repositoryManager;
-
+            _permissionRepository = repositoryManager.GetRepository<Permission>();
 
         }
 
         public async Task<IEnumerable<Permission>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            IRepository<Permission> permissionRepository = _repositoryManager.GetRepository<Permission>();
-            var permissions = await permissionRepository.GetAll(cancellationToken);
+            var permissions = await _permissionRepository.GetAll(cancellationToken);
             return permissions;
         }
 
 
         public async Task<Permission> GetByIdAsync(Guid permissionId, CancellationToken cancellationToken = default)
         {
-            var permission = await _repositoryManager.PermissionRepository.GetById(permissionId, cancellationToken);
+            var permission = await _permissionRepository.GetById(permissionId, cancellationToken);
             if (permission is null)
             {
                 throw new PremissionNotFoundException(permissionId);
@@ -46,8 +47,8 @@ namespace Services
         {
            
             var permission = permissionForCreationDto.Adapt<Permission>();
-            _repositoryManager.PermissionRepository.Insert(permission);
-
+            await _permissionRepository.InsertAsync(permission);
+            
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             return permission;
@@ -55,7 +56,7 @@ namespace Services
 
         public async Task UpdateAsync(Guid permissionId, PermissionForUpdateDto permissionForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var permission = await _repositoryManager.PermissionRepository.GetById(permissionId, cancellationToken);
+            var permission = await _permissionRepository.GetById(permissionId, cancellationToken);
             if (permission is null)
             {
                 throw new PremissionNotFoundException(permissionId);
@@ -68,14 +69,14 @@ namespace Services
 
         public async Task DeleteAsync(Guid permissionId, CancellationToken cancellationToken = default)
         {
-            var permission = await _repositoryManager.PermissionRepository.GetById(permissionId, cancellationToken);
+            var permission = await _permissionRepository.GetById(permissionId, cancellationToken);
 
             if (permission is null)
             {
                 throw new UserNotFoundException(permissionId);
             }
 
-            _repositoryManager.PermissionRepository.Remove(permission);
+            _permissionRepository.Delete(permission);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
         }

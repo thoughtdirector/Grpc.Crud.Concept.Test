@@ -1,4 +1,6 @@
 ﻿using System;
+using Contracts.DTO;
+using Domain.Entities;
 using Domain.Repositories;
 using Services.Abstractions;
 using Services.Services.Contract;
@@ -7,20 +9,20 @@ namespace Services
 {
     public sealed class ServiceManager : IServiceManager
     {
-        private readonly Lazy<IUserService> _lazyUserService;
-        private readonly Lazy<IRoleService> _lazyRoleService;
-        private readonly Lazy<IPermissionService> _lazyPermissionService;
+        private readonly Lazy<IService<User, UserForCreationDto, UserForUpdateDto>> _lazyUserService;
         public ServiceManager(IRepositoryManager repositoryManager)
         {
-            _lazyUserService = new Lazy<IUserService>(() => new UserService(repositoryManager));
-            _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager));
-            _lazyPermissionService = new Lazy<IPermissionService>(() => new PermissionService(repositoryManager));
+            _lazyUserService = new Lazy<IService<User, UserForCreationDto, UserForUpdateDto>>(() => new UserService(repositoryManager));
         }
 
-       public IUserService UserService => _lazyUserService.Value;
+       public IService<User, UserForCreationDto, UserForUpdateDto> UserService => _lazyUserService.Value;
 
-       public IRoleService RoleService => _lazyRoleService.Value;
-
-       public IPermissionService PermissionService => _lazyPermissionService.Value;
+        public IService<TEntity, TCreationDto, TUpdateDto> GetService<TEntity, TCreationDto, TUpdateDto>()
+            where TEntity : Entity<Guid>
+            where TCreationDto : class
+            where TUpdateDto : class
+        {
+            throw new NotImplementedException();
+        }
     }
 }

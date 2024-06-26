@@ -15,12 +15,12 @@ namespace Persistence.Repositories
         private readonly RepositoryDbContext _dbContext;
         public UserRepository(RepositoryDbContext dbContext) => _dbContext = dbContext;
         public async Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default) =>
-            await _dbContext.Users.Include(x => x.roles).ToListAsync(cancellationToken);
+            await _dbContext.GetValues<User>().Include(x => x.roles).ToListAsync(cancellationToken);
         public async Task<IEnumerable<User>> GetByRoleId(Guid roleId, CancellationToken cancellationToken = default) =>
-           await _dbContext.Users.Include(x => x.roles).Where(x => x.roles.Count(x => x.Id== roleId) >= 1).ToListAsync(cancellationToken);
+           await _dbContext.GetValues<User>().Include(x => x.roles).Where(x => x.roles.Count(x => x.Id== roleId) >= 1).ToListAsync(cancellationToken);
         public async Task<User> GetById(Guid userId, CancellationToken cancellationToken = default) =>
-            await _dbContext.Users.Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
-        public async Task InsertAsync(User user, CancellationToken cancellationToken = default) => await _dbContext.Users.AddAsync(user);
-        public void Delete(User user) => _dbContext.Users.Remove(user);
+            await _dbContext.GetValues<User>().Include(x => x.roles).FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+        public async Task InsertAsync(User user, CancellationToken cancellationToken = default) => await _dbContext.GetValues<User>().AddAsync(user);
+        public void Delete(User user) => _dbContext.GetValues<User>().Remove(user);
     }
 }

@@ -12,22 +12,29 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal sealed class RoleService : IRoleService
+    internal sealed class RoleService : IService<Shopping, RoleForCreationDto, RoleForUpdateDto>
     {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IRepository<Shopping> _shoppingRepository;
+        private readonly IRepository<Permission> _permissionRepository;
 
-        public RoleService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
+
+        public RoleService(IRepositoryManager repositoryManager)
+        {
+            _repositoryManager = repositoryManager;
+            _shoppingRepository = repositoryManager.GetRepository<Shopping>();
+        }
 
         public async Task<IEnumerable<Shopping>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var roles = await _repositoryManager.RoleRepository.GetAll(cancellationToken);
+            var roles = await _shoppingRepository.GetAll(cancellationToken);
             return roles;
         }
 
 
         public async Task<Shopping> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default)
         {
-            var role = await _repositoryManager.RoleRepository.GetById(roleId, cancellationToken);
+            var role = await _shoppingRepository.GetById(roleId, cancellationToken);
             if (role is null)
             {
                 throw new UserNotFoundException(roleId);
@@ -37,13 +44,13 @@ namespace Services
 
         public async Task<Shopping> CreateAsync(RoleForCreationDto roleForCreationDto, CancellationToken cancellationToken = default)
         {
-            var permission = await _repositoryManager.RoleRepository.GetById(roleForCreationDto.permissionsId, cancellationToken);
+            var permission = await _shoppingRepository.GetById(roleForCreationDto.permissionsId, cancellationToken);
             if (permission is null)
             {
                 throw new PremissionNotFoundException(roleForCreationDto.permissionsId);
             }
             var Role = roleForCreationDto.Adapt<Shopping>();
-            _repositoryManager.RoleRepository.Insert(Role);
+            _shoppingRepository.InsertAsync(Role);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -52,12 +59,12 @@ namespace Services
 
         public async Task UpdateAsync(Guid roleId, RoleForUpdateDto roleForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var role = await _repositoryManager.RoleRepository.GetById(roleId, cancellationToken);
+            var role = await _shoppingRepository.GetById(roleId, cancellationToken);
             if (role is null)
             {
                 throw new UserNotFoundException(roleId);
             }
-            var permission = await _repositoryManager.PermissionRepository.GetById(roleForUpdateDto.permissionsId, cancellationToken);
+            var permission = await _permissionRepository.GetById(roleForUpdateDto.permissionsId, cancellationToken);
             if (permission is null)
             {
                 throw new RoleNotFoundException(roleForUpdateDto.permissionsId);
@@ -71,14 +78,14 @@ namespace Services
 
         public async Task DeleteAsync(Guid roleId, CancellationToken cancellationToken = default)
         {
-            var role = await _repositoryManager.RoleRepository.GetById(roleId, cancellationToken);
+            var role = await _shoppingRepository.GetById(roleId, cancellationToken);
 
             if (role is null)
             {
                 throw new UserNotFoundException(roleId);
             }
 
-            _repositoryManager.RoleRepository.Remove(role);
+            _shoppingRepository.Delete(role);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
