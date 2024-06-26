@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Services.Contract;
+using
 
 namespace Persistence.Repositories
 {
@@ -21,7 +22,7 @@ namespace Persistence.Repositories
 
         public IRepository<T> GetRepository<T>() where T : Entity<Guid>
         {
-            var repositoryType = typeof(IRepository<T>);
+            Type repositoryType = typeof(IRepository<T>);
             if (!_repositories.ContainsKey(repositoryType))
             {
                 InitializeRepository<T>();
