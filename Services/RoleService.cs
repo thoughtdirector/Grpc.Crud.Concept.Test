@@ -44,7 +44,7 @@ namespace Services
 
         public async Task<Shopping> CreateAsync(RoleForCreationDto roleForCreationDto, CancellationToken cancellationToken = default)
         {
-            Permission permission = await _shoppingRepository.GetById(roleForCreationDto.permissionsId, cancellationToken);
+            Shopping permission = await _shoppingRepository.GetById(roleForCreationDto.permissionsId, cancellationToken);
             if (permission is null)
             {
                 throw new PremissionNotFoundException(roleForCreationDto.permissionsId);
