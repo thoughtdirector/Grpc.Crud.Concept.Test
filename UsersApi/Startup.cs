@@ -1,24 +1,18 @@
+using Contracts.DTO;
+using CustomValidations;
+using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
 using Services;
-using Services.Abstractions;
 using Services.Services.Contract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace UsersApi
 {
@@ -40,21 +34,26 @@ namespace UsersApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UsersApi", Version = "v1" });
             });
 
-            services.AddDbContextPool<RepositoryDbContext>(builder =>
-            {
-                var connectionString = Configuration.GetConnectionString("Database");
-                builder.UseSqlServer(connectionString);
-            });
+            // Configurar conexión a MongoDB
+            var mongoConnectionString = Configuration.GetConnectionString("MongoDatabase");
+            var databaseName = Configuration["ConnectionStrings:DatabaseName"];
+            services.AddScoped<RepositoryDbContext>(provider => new RepositoryDbContext(mongoConnectionString, databaseName));
+            RegisterAutoServices(services);
         }
 
         private void RegisterServices(IServiceCollection services)
         {
-           
-            services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        private void RegisterAutoServices(IServiceCollection services)
+        {
+            services.AddScoped<IService<User, UserForCreationDto, UserForUpdateDto>, UserService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<IValidator<User>, UserValidator>();
+            services.AddAutoServices(typeof(IRepository<>), typeof(RepositoryManager));
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

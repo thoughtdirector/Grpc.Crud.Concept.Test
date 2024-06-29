@@ -7,6 +7,5 @@ namespace Domain.Repositories
     public interface IRepositoryManager
     {
         IRepository<T> GetRepository<T>() where T : Entity;
-        IUnitOfWork UnitOfWork { get; }
     }
 }

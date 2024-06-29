@@ -1,28 +1,30 @@
 ﻿using Contracts.DTO;
+using CustomValidations;
 using Domain.Entities;
-using Domain.Exceptions.BadRequestException;
 using Domain.Exceptions.NotFoundException;
 using Domain.Repositories;
 using Mapster;
 using Services.Services.Contract;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Services
 {
-    internal sealed class UserService : IService<User, UserForCreationDto, UserForUpdateDto>
+    public class UserService : IService<User, UserForCreationDto, UserForUpdateDto>
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IRepository<User> _userRepository;
-        private readonly IRepository<Shopping> _shoppingRepository;
+        private readonly IValidator<User> _userValidator;
 
-        public UserService(IRepositoryManager repositoryManager) 
+        public UserService(IRepositoryManager repositoryManager, IValidator<User> userValidator)
         {
             _repositoryManager = repositoryManager;
             _userRepository = repositoryManager.GetRepository<User>();
-            _shoppingRepository = repositoryManager.GetRepository<Shopping>();
+            _userValidator = userValidator;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -43,36 +45,40 @@ namespace Services
 
         public async Task<User> CreateAsync(UserForCreationDto userForCreationDto, CancellationToken cancellationToken = default)
         {
-            var role = await _shoppingRepository.GetById(userForCreationDto.roleId, cancellationToken);
-            if (role is null)
-            {
-                throw new RoleNotFoundException(userForCreationDto.roleId);
-            }
-            var user = userForCreationDto.Adapt<User>();
-            _userRepository.InsertAsync(user);
+            User user = userForCreationDto.Adapt<User>();
 
-            await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+            if (!_userValidator.Validate(user))
+            {
+                throw new ValidationException("Failed user validation");
+            }
+
+            await _userRepository.InsertAsync(user, cancellationToken);
 
             return user;
         }
 
         public async Task UpdateAsync(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken cancellationToken = default)
         {
-            User user = await _userRepository.GetById( userId, cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
-            var role = await _shoppingRepository.GetById( userForUpdateDto.roleId , cancellationToken);
-            if (role is null)
-            {
-                throw new RoleNotFoundException(userForUpdateDto.roleId);
-            }
-            user.userEmail = userForUpdateDto.userEmail;
-            user.roles.Add(role);
-            
 
-            await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+            user = userForUpdateDto.Adapt(user);
+
+            if (!_userValidator.Validate(user))
+            {
+                throw new ValidationException("Failed user validation after update");
+            }
+
+            await _userRepository.UpdateAsync(user, cancellationToken);
+        }
+
+        public async Task<IEnumerable<User>> GetByRole(int? role)
+        {
+            var users = await _userRepository.GetAll();
+            return users.Where(user => (int?)user.UserRole == role);
         }
 
         public async Task DeleteAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -85,8 +91,6 @@ namespace Services
             }
 
             _userRepository.Delete(user);
-
-            await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

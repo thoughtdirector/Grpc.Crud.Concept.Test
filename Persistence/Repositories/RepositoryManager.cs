@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence.Messages;
 using Services.Services.Contract;
 
-
 namespace Persistence.Repositories
 {
     public sealed class RepositoryManager : IRepositoryManager
@@ -31,7 +30,7 @@ namespace Persistence.Repositories
 
             if (!_repositories.TryGetValue(repositoryType, out object repository))
             {
-                throw new InvalidOperationException(string.Format(RepositoryMessages.RepositoryTypeNotRegistered,repositoryType.Name));
+                throw new InvalidOperationException(string.Format(RepositoryMessages.RepositoryTypeNotRegistered, repositoryType.Name));
             }
 
             return (IRepository<T>)repository;
@@ -42,7 +41,8 @@ namespace Persistence.Repositories
             Type repositoryType = typeof(IRepository<T>);
             Type concreteType = Assembly.GetExecutingAssembly().GetTypes()
                 .FirstOrDefault(t => !t.IsAbstract && !t.IsInterface &&
-                    t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRepository<>)));
+                    t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRepository<>)) &&
+                    typeof(IRepository<T>).IsAssignableFrom(t));
 
             if (concreteType != null)
             {
@@ -54,7 +54,5 @@ namespace Persistence.Repositories
                 throw new InvalidOperationException($"No concrete implementation found for repository of type {repositoryType.Name}.");
             }
         }
-
-        public IUnitOfWork UnitOfWork => _serviceProvider.GetService<IUnitOfWork>();
     }
 }

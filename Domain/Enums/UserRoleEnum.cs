@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum UserRole
+    public enum UserRoleEnum
     {
-        Admin,
-        Functionary,
-        Artist
+        Masajista,
+        Ciclista,
+        DirectorDeportivo,
+        Usuario
     }
 }

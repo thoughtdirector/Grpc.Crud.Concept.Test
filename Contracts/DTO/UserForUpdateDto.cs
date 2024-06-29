@@ -5,17 +5,30 @@ namespace Contracts.DTO
 {
     public class UserForUpdateDto
     {
+        public string? UserName { get; set; }
 
-        [Required(ErrorMessage = "phone is required")]
-        public int userPhone { get; set; }
+        [EmailAddress]
+        public string? UserEmail { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Email is not in a rigth format")]
-        [StringLength(250, ErrorMessage = "Email cannot be loner then 250 characters")]
-        public string userEmail { get; set; }
+        public string? UserPassword { get; set; }
 
+        public int? UserRole { get; set; } // Use nullable UserRole to allow updating to null
 
-        [Required(ErrorMessage = "Role is required")]
-        public Guid roleId { get; set; }
+        // Cyclist Attributes
+        public string? Gender { get; set; }
+        public string? Speciality { get; set; }
+        public string? Contextura { get; set; }
+        public string? AccumulatedTime { get; set; }
+        public string? EquipoId { get; set; }
+
+        // Sports Director Attributes
+        public string? Nationality { get; set; }
+
+        // Masseur Attributes
+        public string? Experience { get; set; }
+
+        // Common properties
+        public DateTime? DateOfBirth { get; set; } // Use nullable DateTime to allow updating to null
+        public bool? IsActive { get; set; } // Use nullable bool? to allow updating to null
     }
 }

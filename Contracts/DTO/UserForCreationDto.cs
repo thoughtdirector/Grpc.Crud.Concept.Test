@@ -1,25 +1,37 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 
 namespace Contracts.DTO
 {
     public class UserForCreationDto
     {
-        [Required(ErrorMessage = "Name is required")]
-        [StringLength(120, ErrorMessage = "Name can't be longer than 120 characters")]
-        public string userName { get; set; }
+        [Required]
+        public string? UserName { get; set; }
+        [Required]
+        public string? UserLastName { get; set; }
+        [Required]
+        [EmailAddress]
+        public string? UserEmail { get; set; }
+        [Required]
+        public string? UserPassword { get; set; }
+        [Required]
+        public string? UserPasswordCofirmation { get; set; }
+        public string? Cedula { get; set; }
 
-        [Required(ErrorMessage = "phone is required")]
-        public int userPhone { get; set; }
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Email is not in a rigth format")]
-        [StringLength(250, ErrorMessage = "Email cannot be loner then 250 characters")]
-        public string userEmail { get; set; }
-
-
-        [Required(ErrorMessage = "Role is required")]
-        public Guid roleId { get; set; }
+        [EnumDataType(typeof(UserRoleEnum))]
+        public int? UserRole { get; set; }
+        public string? Gender { get; set; }
+        public string? Speciality { get; set; }
+        public string? Contextura { get; set; }
+        public string? AccumulatedTime { get; set; }
+        public string? EquipoId { get; set; }
+        public int? Age { get; set; }
+        public double? Height { get; set; }
+        public double? Weight { get; set; }
+        public string? Nationality { get; set; }
+        public string? Experience { get; set; }
+        public bool? IsActive { get; set; }
     }
+
 }

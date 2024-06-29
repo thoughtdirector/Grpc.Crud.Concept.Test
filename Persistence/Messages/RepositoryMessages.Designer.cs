@@ -61,9 +61,9 @@ namespace Persistence.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repository of type {0} not registered..
+        ///   Looks up a localized string? similar to Repository of type {0} not registered..
         /// </summary>
-        internal static string RepositoryTypeNotRegistered {
+        internal static string? RepositoryTypeNotRegistered {
             get {
                 return ResourceManager.GetString("RepositoryTypeNotRegistered", resourceCulture);
             }
