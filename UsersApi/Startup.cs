@@ -63,6 +63,16 @@ namespace UsersApi
             services.AddScoped<UserService>();
             services.AddScoped<IValidator<User>, UserValidator>();
             services.AddAutoServices(typeof(IRepository<>), typeof(RepositoryManager));
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IMailer>(provider =>
+            {
+                var config = provider.GetRequiredService<IConfiguration>();
+                var smtpServer = config["smtp.gmail.com"]; // Replace with actual key name
+                var smtpPort = int.Parse(config["587"]); // Replace with actual key name
+                var smtpUsername = config["javalbuena30@gmail.com"]; // Replace with actual key name
+                var smtpPassword = config["JU4N124NG3L"]; // Replace with actual key name
+                return new Mailer(smtpServer, smtpPort, smtpUsername, smtpPassword);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

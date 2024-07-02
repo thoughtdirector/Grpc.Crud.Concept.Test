@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Models
+﻿namespace Domain.Value_objects
 {
     public class Message
     {
@@ -14,4 +8,3 @@ namespace Domain.Models
         public string Body { get; set; }
     }
 }
-

@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using ExternalServices.EmailSender;
-using MailKit.Net.Smtp;
+﻿using Domain.Value_objects;
 using MailKit.Security;
 using MimeKit;
+using Services.Services.Contract;
+using System.Threading.Tasks;
 
-namespace ExternalServicesImplementation.EmailSenderImplementation
-
+namespace Services{
 public class Mailer : IMailer
 {
     private readonly string _smtpServer;
@@ -21,7 +20,7 @@ public class Mailer : IMailer
         _smtpPassword = smtpPassword;
     }
 
-    public async Task SendEmailAsync(IMessage message)
+    public async Task SendEmailAsync(Message message)
     {
         var mimeMessage = new MimeMessage();
         mimeMessage.From.Add(new MailboxAddress("Your Name", message.FromEmail));
@@ -32,7 +31,7 @@ public class Mailer : IMailer
             Text = message.Body
         };
 
-        using var client = new SmtpClient();
+        using var client = new MailKit.Net.Smtp.SmtpClient();
         await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
 
         // Optional: Authenticate with your email credentials
@@ -41,4 +40,5 @@ public class Mailer : IMailer
         await client.SendAsync(mimeMessage);
         await client.DisconnectAsync(true);
     }
+}
 }

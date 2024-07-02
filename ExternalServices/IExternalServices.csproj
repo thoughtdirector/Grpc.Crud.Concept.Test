@@ -10,4 +10,12 @@
     <PackageReference Include="Microsoft.AspNet.Cors" Version="5.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ServicesAbstraction\NewFolder\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
 </Project>
