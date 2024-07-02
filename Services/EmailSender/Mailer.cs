@@ -23,7 +23,7 @@ public class Mailer : IMailer
     public async Task SendEmailAsync(Message message)
     {
         var mimeMessage = new MimeMessage();
-        mimeMessage.From.Add(new MailboxAddress("Your Name", message.FromEmail));
+        mimeMessage.From.Add(new MailboxAddress("ISUCI", message.FromEmail));
         mimeMessage.To.Add(new MailboxAddress("", message.ToEmail));
         mimeMessage.Subject = message.Subject;
         mimeMessage.Body = new TextPart("plain")

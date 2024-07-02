@@ -23,6 +23,7 @@ public class EmailService : IEmailService
         };
 
         await _mailer.SendEmailAsync(message);
+           
     }
 }
 }

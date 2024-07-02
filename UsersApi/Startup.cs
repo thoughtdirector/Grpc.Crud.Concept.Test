@@ -67,10 +67,10 @@ namespace UsersApi
             services.AddTransient<IMailer>(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                var smtpServer = config["smtp.gmail.com"]; // Replace with actual key name
-                var smtpPort = int.Parse(config["587"]); // Replace with actual key name
-                var smtpUsername = config["javalbuena30@gmail.com"]; // Replace with actual key name
-                var smtpPassword = config["JU4N124NG3L"]; // Replace with actual key name
+                var smtpServer = config["SMTP:Server"];
+                var smtpPort = int.Parse(config["SMTP:Port"]);
+                var smtpUsername = config["SMTP:Username"];
+                var smtpPassword = config["SMTP:Password"];
                 return new Mailer(smtpServer, smtpPort, smtpUsername, smtpPassword);
             });
         }
