@@ -15,6 +15,7 @@ namespace CustomValidations
             _validations = new Dictionary<UserRoleEnum, Func<User, bool>>()
             {
                 { UserRoleEnum.Ciclista,  user => ValidateCiclista(user) },
+                { UserRoleEnum.Usuario,  user => ValidateUsuario(user) },
                 { UserRoleEnum.Masajista, user => ValidateMasajista(user) },
                 { UserRoleEnum.DirectorDeportivo, user => ValidateDirectorDeportivo(user) }
             };
@@ -43,6 +44,15 @@ namespace CustomValidations
                    !string.IsNullOrWhiteSpace(user.Contextura) &&
                    user.Age != null && user.Height != null && user.Weight != null &&
                    user.Experience == null;
+        }
+
+        private bool ValidateUsuario(User user)
+        {
+            return !string.IsNullOrWhiteSpace(user.UserPassword ) &&
+                   !string.IsNullOrWhiteSpace(user.UserPasswordCofirmation) &&
+                   !string.IsNullOrWhiteSpace(user.UserEmail) &&
+                   !string.IsNullOrWhiteSpace(user.UserName) &&
+                   !string.IsNullOrWhiteSpace(user.UserLastName);
         }
 
         private bool ValidateMasajista(User user)

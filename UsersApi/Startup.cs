@@ -39,6 +39,17 @@ namespace UsersApi
             var databaseName = Configuration["ConnectionStrings:DatabaseName"];
             services.AddScoped<RepositoryDbContext>(provider => new RepositoryDbContext(mongoConnectionString, databaseName));
             RegisterAutoServices(services);
+            // Named Policy
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowOrigin",
+                    builder =>
+                    {
+                        builder.WithOrigins("*")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+            });
         }
 
         private void RegisterServices(IServiceCollection services)
@@ -68,6 +79,8 @@ namespace UsersApi
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseCors("AllowOrigin");
+
 
             app.UseEndpoints(endpoints =>
             {

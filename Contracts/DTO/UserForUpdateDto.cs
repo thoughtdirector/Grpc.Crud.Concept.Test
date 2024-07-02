@@ -28,7 +28,6 @@ namespace Contracts.DTO
         public string? Experience { get; set; }
 
         // Common properties
-        public DateTime? DateOfBirth { get; set; } // Use nullable DateTime to allow updating to null
         public bool? IsActive { get; set; } // Use nullable bool? to allow updating to null
     }
 }

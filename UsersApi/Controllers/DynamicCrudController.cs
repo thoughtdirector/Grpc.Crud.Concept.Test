@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services.Contract;
 
 namespace Presentation.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [ApiController]
     [Route("api/[controller]")]
     public class CrudController<TEntity, TCreationDto, TUpdateDto> : ControllerBase
@@ -21,14 +23,14 @@ namespace Presentation.Controllers
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var entities = await _service.GetAllAsync(cancellationToken);
             return Ok(entities);
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -41,7 +43,7 @@ namespace Presentation.Controllers
 
             return Ok(entity);
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TCreationDto dto)
         {
@@ -49,7 +51,7 @@ namespace Presentation.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = GetEntityId(createdEntity) }, createdEntity);
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] TUpdateDto dto, CancellationToken cancellationToken)
         {
@@ -57,7 +59,7 @@ namespace Presentation.Controllers
 
             return Ok("Entity Updated");
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {

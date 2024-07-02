@@ -5,9 +5,11 @@ using Services;
 using Services.Services.Contract;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.Cors;
 
 namespace Presentation.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : CrudController<User, UserForCreationDto, UserForUpdateDto>
@@ -17,7 +19,7 @@ namespace Presentation.Controllers
         {
             _userService = userService;
         }
-
+        [EnableCors("AllowOrigin")]
         [HttpGet("getUserByRole/{role}")]
         public async Task<IActionResult> GetByRole(int? role)
         {

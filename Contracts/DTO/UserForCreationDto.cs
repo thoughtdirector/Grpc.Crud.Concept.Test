@@ -1,6 +1,8 @@
 ﻿using Domain.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Contracts.DTO
 {
@@ -22,7 +24,9 @@ namespace Contracts.DTO
         [EnumDataType(typeof(UserRoleEnum))]
         public int? UserRole { get; set; }
         public string? Gender { get; set; }
-        public string? Speciality { get; set; }
+
+        [EnumDataType(typeof(TipoCiclistaEnum))]
+        public int? Speciality { get; set; }
         public string? Contextura { get; set; }
         public string? AccumulatedTime { get; set; }
         public string? EquipoId { get; set; }

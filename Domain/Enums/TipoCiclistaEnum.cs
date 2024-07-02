@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum UserRoleEnum
+    public enum TipoCiclistaEnum
     {
-        Usuario,
-        Masajista,
-        Ciclista,
-        DirectorDeportivo,
+        Escalador,
+        Rodador,
+        Sprinter,
+        Gregario,
+        Clasicomano,
+        Contrarrelojista
     }
+
 }
