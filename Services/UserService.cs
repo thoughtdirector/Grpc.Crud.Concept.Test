@@ -61,7 +61,6 @@ namespace Services
                    "Gracias y que tengas un excelente día.";
         }
 
-
         public async Task<User> CreateAsync(UserForCreationDto userForCreationDto, CancellationToken cancellationToken = default)
         {
             User user = userForCreationDto.Adapt<User>();
@@ -74,7 +73,7 @@ namespace Services
             await _userRepository.InsertAsync(user, cancellationToken);
 
             var fromEmail = _configuration["SMTP:Username"]; 
-            var subject = "Welcome to Our ISUCI!";
+            var subject = "Welcome to ISUCI!";
 
             var body = GenerarMensajeBienvenida(user.UserName, user.UserLastName, user.UserEmail, user.UserPassword);
 

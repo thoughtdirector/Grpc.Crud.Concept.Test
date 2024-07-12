@@ -30,11 +30,11 @@ namespace Contracts.DTO
         public string? Contextura { get; set; }
         public string? AccumulatedTime { get; set; }
         public string? EquipoId { get; set; }
-        public int? Age { get; set; }
+        public DateTime? Age { get; set; }
         public double? Height { get; set; }
         public double? Weight { get; set; }
         public string? Nationality { get; set; }
-        public string? Experience { get; set; }
+        public DateTime? Experience { get; set; }
         public bool? IsActive { get; set; }
     }
 

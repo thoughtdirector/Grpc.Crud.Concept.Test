@@ -61,6 +61,8 @@ namespace UsersApi
         {
             services.AddScoped<IService<User, UserForCreationDto, UserForUpdateDto>, UserService>();
             services.AddScoped<UserService>();
+            services.AddScoped<IService<Team, Team, Team>, TeamService>();
+            services.AddScoped<TeamService>();
             services.AddScoped<IValidator<User>, UserValidator>();
             services.AddAutoServices(typeof(IRepository<>), typeof(RepositoryManager));
             services.AddTransient<IEmailService, EmailService>();

@@ -24,11 +24,6 @@ namespace Persistence.Repositories
             return await _usersCollection.Find(_ => true).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<User>> GetByRole(int? roleId, CancellationToken cancellationToken = default)
-        {
-            return await _usersCollection.Find(x => (int?)x.UserRole == roleId).ToListAsync(cancellationToken);
-        }
-
         public async Task<User> GetById(Guid userId, CancellationToken cancellationToken = default)
         {
             return await _usersCollection.Find(x => x.Id == userId).FirstOrDefaultAsync(cancellationToken);

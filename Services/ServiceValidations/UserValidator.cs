@@ -40,7 +40,7 @@ namespace CustomValidations
         {
             return !string.IsNullOrWhiteSpace(user.Cedula) &&
                    !string.IsNullOrWhiteSpace(user.Gender) &&
-                   !string.IsNullOrWhiteSpace(user.Speciality) &&
+                   (user.Speciality == null) &&
                    !string.IsNullOrWhiteSpace(user.Contextura) &&
                    user.Age != null && user.Height != null && user.Weight != null &&
                    user.Experience == null;
@@ -60,7 +60,7 @@ namespace CustomValidations
             return user.Experience != null &&
                    string.IsNullOrWhiteSpace(user.Cedula) &&
                    string.IsNullOrWhiteSpace(user.Gender) &&
-                   string.IsNullOrWhiteSpace(user.Speciality) &&
+                     (user.Speciality == null) &&
                    string.IsNullOrWhiteSpace(user.Contextura) &&
                    user.Age == null && user.Height == null && user.Weight == null;
         }
@@ -70,7 +70,7 @@ namespace CustomValidations
             return user.Nationality != null &&
                    string.IsNullOrWhiteSpace(user.Cedula) &&
                    string.IsNullOrWhiteSpace(user.Gender) &&
-                   string.IsNullOrWhiteSpace(user.Speciality) &&
+                    (user.Speciality == null) &&
                    string.IsNullOrWhiteSpace(user.Contextura) &&
                    user.Age == null && user.Height == null && user.Weight == null;
         }
